@@ -21,13 +21,13 @@ namespace Tamagotchi_prog.Models
 
         public Actions LastAction { get; set; }
 
-        public int Hunger { get; set; }
+        public double Hunger { get; set; }
 
-        public int Sleep { get; set; }
+        public double Sleep { get; set; }
 
-        public int Boredom { get; set; }
+        public double Boredom { get; set; }
 
-        public int Health { get; set; }
+        public double Health { get; set; }
 
         public String ImageURL { get; set; }
 

@@ -14,18 +14,18 @@ namespace Tamagotchi_prog.Models.GameRules
 
             if (tamagotchi.MunchieTime < timePassed && tamagotchi.MunchieTime > 0)
             {
-                tamagotchi.Hunger += (int) Math.Round((timePassed - tamagotchi.MunchieTime)*(multipliers["hunger"]*2));
-                tamagotchi.Hunger += (int) Math.Round(tamagotchi.MunchieTime*multipliers["hunger"]);
+                tamagotchi.Hunger += ((timePassed - tamagotchi.MunchieTime)*(multipliers["hunger"]*2));
+                tamagotchi.Hunger += (tamagotchi.MunchieTime*multipliers["hunger"]);
             }
             else
             {
                 if (tamagotchi.StatusEffects.Munchies)
                 {
-                    tamagotchi.Hunger += (int) Math.Round(timePassed*(multipliers["hunger"]*2));
+                    tamagotchi.Hunger += (timePassed*(multipliers["hunger"]*2));
                 }
                 else
                 {
-                    tamagotchi.Hunger += (int)Math.Round(timePassed * multipliers["hunger"]);
+                    tamagotchi.Hunger += (timePassed * multipliers["hunger"]);
                 }
             }
 

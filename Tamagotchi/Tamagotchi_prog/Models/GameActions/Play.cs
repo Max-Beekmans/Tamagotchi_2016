@@ -34,8 +34,9 @@ namespace Tamagotchi_prog.Models.GameActions
         {
             if (tamagotchi.CooldownTime < passedTime)
             {
-                tamagotchi.Boredom = (int)(tamagotchi.Boredom - actionMultipliers["play"]);
+                tamagotchi.Boredom = (tamagotchi.Boredom - actionMultipliers["play"]);
                 tamagotchi.LastAction = Actions.None;
+                tamagotchi.CooldownTime = 0;
                 return 1;
             }
             return 0;

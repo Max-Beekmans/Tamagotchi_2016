@@ -102,7 +102,7 @@ namespace Tamagotchi.test
         [TestCategory("Actions")]
         public void PlayTest()
         {
-            int _boredom = _testTamagotchi.Boredom;
+            var _boredom = _testTamagotchi.Boredom;
             _game.ExecuteAction(_testTamagotchi, Actions.Play);
             
             if (_testTamagotchi.CooldownTime != 0.5)
@@ -121,7 +121,7 @@ namespace Tamagotchi.test
         [TestCategory("Actions")]
         public void WorkoutTest()
         {
-            int _health = _testTamagotchi.Health;
+            var _health = _testTamagotchi.Health;
             _game.ExecuteAction(_testTamagotchi, Actions.Workout);
 
             if (_testTamagotchi.CooldownTime != 1)
@@ -140,7 +140,7 @@ namespace Tamagotchi.test
         [TestCategory("Actions")]
         public void HugTest()
         {
-            int _health = _testTamagotchi.Health;
+            var _health = _testTamagotchi.Health;
             _game.ExecuteAction(_testTamagotchi, Actions.Hug);
 
             if (_testTamagotchi.CooldownTime != 1)

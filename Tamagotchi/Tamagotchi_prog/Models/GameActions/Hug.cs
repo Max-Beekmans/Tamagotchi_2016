@@ -34,8 +34,9 @@ namespace Tamagotchi_prog.Models.GameActions
         {
             if (tamagotchi.CooldownTime < passedTime)
             {
-                tamagotchi.Health = (int)(tamagotchi.Health - actionMultipliers["hug"]);
+                tamagotchi.Health = tamagotchi.Health - actionMultipliers["hug"];
                 tamagotchi.LastAction = Actions.None;
+                tamagotchi.CooldownTime = 0;
                 return 1;
             }
             return 0;
