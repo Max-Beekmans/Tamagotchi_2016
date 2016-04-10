@@ -35,8 +35,9 @@ namespace Tamagotchi_prog.Models.GameActions
         {
             if (tamagotchi.CooldownTime <= passedTime)
             {
-                tamagotchi.Hunger = (int)(tamagotchi.Hunger - actionMultipliers["eat"]);
+                tamagotchi.Hunger = (tamagotchi.Hunger - actionMultipliers["eat"]);
                 tamagotchi.LastAction = Actions.None;
+                tamagotchi.CooldownTime = 0;
                 return 1;
             }
             return 0;

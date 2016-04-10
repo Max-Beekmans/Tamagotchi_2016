@@ -11,43 +11,65 @@ namespace Tamagotchi_prog.Models.GameRules
 
         public override void Load()
         {
-            var settingsDictonary = GetGameRule();
+            //var settingsDictonary = GetGameRule();
 
-            if (settingsDictonary["Fatigue"])
+            //if (settingsDictonary["Fatigue"])
+            //{
+            //    Bind<IGameRule>().To<FatigueRule>();
+            //}
+
+            //if (settingsDictonary["Hunger"])
+            //{
+            //    Bind<IGameRule>().To<HungerRule>();
+            //}
+
+            //if (settingsDictonary["Boredom"])
+            //{
+            //    Bind<IGameRule>().To<BoredomRule>();
+            //}
+
+            //if (settingsDictonary["Isolation"])
+            //{
+            //    Bind<IGameRule>().To<IsolationRule>();
+            //}
+
+            var myContext = new MyContext();
+            var r = myContext.RuleSettings.First();
+            if (r.Fatigue)
             {
                 Bind<IGameRule>().To<FatigueRule>();
             }
 
-            if (settingsDictonary["Hunger"])
+            if (r.Hunger)
             {
                 Bind<IGameRule>().To<HungerRule>();
             }
 
-            if (settingsDictonary["Boredom"])
+            if (r.Boredom)
             {
                 Bind<IGameRule>().To<BoredomRule>();
             }
 
-            if (settingsDictonary["Isolation"])
+            if (r.Isolation)
             {
                 Bind<IGameRule>().To<IsolationRule>();
             }
 
         }
 
-        private Dictionary<String, bool> GetGameRule()
-        {
-            var EnabledRules = new Dictionary<String, bool>
-            {
-                {"Boredom", true},
-                {"Hunger", true},
-                {"Fatigue", true},
-                {"Isolation", true}
-            };
-            //MyContext Context = new MyContext();
-            //return Context.Settings.First().EnabledRules;
-            return EnabledRules;
-        }
+        //private Dictionary<String, bool> GetGameRule()
+        //{
+        //    //var EnabledRules = new Dictionary<String, bool>
+        //    //{
+        //    //    {"Boredom", true},
+        //    //    {"Hunger", true},
+        //    //    {"Fatigue", true},
+        //    //    {"Isolation", true}
+        //    //};
+        //    //MyContext Context = new MyContext();
+        //    //return Context.RuleSettings.First().;
+        //    //return EnabledRules;
+        //}
        
     }
 }

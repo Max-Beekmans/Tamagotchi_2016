@@ -23,14 +23,12 @@ namespace Tamagotchi_prog.Controllers
         {
             List<Tamagotchi> deadTamagotchis = new List<Tamagotchi>();
 
-            //using (var context = new MyContext())
-            //{
                 foreach (var tamagotchi in _myContext.Tamagotchis.ToList())
                 {
                     game.ExecuteAllRules(tamagotchi);
 
-                    int[] values = new int[] { tamagotchi.Health, tamagotchi.Hunger, tamagotchi.Sleep, tamagotchi.Boredom };
-                    int highestValue = values.Max();
+                    double[] values = new double[] { tamagotchi.Health, tamagotchi.Hunger, tamagotchi.Sleep, tamagotchi.Boredom };
+                    var highestValue = values.Max();
 
                     if (highestValue != 0)
                     {
@@ -63,7 +61,6 @@ namespace Tamagotchi_prog.Controllers
                 ViewBag.DeadTamagotchis = deadTamagotchis;
 
                return View(_myContext.Tamagotchis.ToList().Where(t => !t.IsDead));
-            //}
         }
 
 
@@ -197,10 +194,15 @@ namespace Tamagotchi_prog.Controllers
         [HttpPost]
         public ActionResult SetSettings(RuleSettings model)
         {
-            _myContext.RuleSettings.Find(1).Boredom = model.Boredom;
+            _myContext.RuleSettings.First().Boredom = model.Boredom;
             _myContext.RuleSettings.First().Hunger = model.Hunger;
             _myContext.RuleSettings.First().Isolation = model.Isolation;
             _myContext.RuleSettings.First().Fatigue = model.Fatigue;
+
+            _myContext.SaveChanges();
+            //game = null;
+            //kernel.Load(new GameRuleModule());
+            //game = kernel.Get<Game>();
 
             return RedirectToAction("Index");
         }

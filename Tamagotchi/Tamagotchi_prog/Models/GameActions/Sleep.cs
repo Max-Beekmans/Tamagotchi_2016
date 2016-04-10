@@ -34,8 +34,9 @@ namespace Tamagotchi_prog.Models.GameActions
         {
             if (tamagotchi.CooldownTime < passedTime)
             {
-                tamagotchi.Sleep = (int)(tamagotchi.Sleep - actionMultipliers["sleep"]);
+                tamagotchi.Sleep = (tamagotchi.Sleep - actionMultipliers["sleep"]);
                 tamagotchi.LastAction = Actions.None;
+                tamagotchi.CooldownTime = 0;
                 return 1;
             }
             return 0;
