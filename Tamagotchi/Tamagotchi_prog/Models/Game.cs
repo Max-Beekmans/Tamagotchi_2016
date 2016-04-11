@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Web.UI.WebControls;
 using Ninject;
 using Tamagotchi_prog.Models.GameActions;
 using Tamagotchi_prog.Models.GameRules;
@@ -11,17 +12,18 @@ namespace Tamagotchi_prog.Models
 {
     public class Game
     {
-        private readonly MyContext _myContext;
-        public Dictionary<String, double> RuleMultipliers;
-        public Dictionary<String, double> ActionMultipliers;
-        public Dictionary<String, double> ActionTimeSpan;
         private GameAction _action;
+
+        public MyContext MyContext { get; set;}
+        public Dictionary<String, double> RuleMultipliers { get; set; }
+        public Dictionary<String, double> ActionMultipliers { get; set; }
+        public Dictionary<String, double> ActionTimeSpan { get; set; }
         public List<IGameRule> EnabledRules { get; set; }
 
         public Game(List<IGameRule> enabledRules )
         {
             EnabledRules = enabledRules;
-            _myContext = new MyContext();
+            MyContext = new MyContext();
 
             //Base Rule Multipliers in minutes. Will be overriden by status effects
             RuleMultipliers = new Dictionary<string, double>
@@ -55,48 +57,148 @@ namespace Tamagotchi_prog.Models
        
         public double PassedTime(DateTime time)
         {
-            var timeNow = DateTime.Now;
-            return Math.Round(((timeNow - time).TotalMinutes) , 2); 
+             var timeNow = DateTime.Now;
+             return Math.Round(((timeNow - time).TotalMinutes), 2);
+        }
+
+        public void CreateTamagotchi(String name)
+        {
+            var newTamagotchi = new Tamagotchi()
+            {
+                Name = name,
+                Health = 0,
+                Hunger = 0,
+                Sleep = 0,
+                Boredom = 0,
+                IsDead = false,
+                LastAccessTime = DateTime.Now,
+                LastAction = Actions.None,
+                StartActionTime = DateTime.Now,
+                ImageURL = "../Content/img/normal_tamagotchi.png",
+                StatusEffects = new StatusEffect()
+                {
+                    Athlete = false,
+                    Crazy = false,
+                    Munchies = false
+                }
+            };
+
+            MyContext.Tamagotchis.Add(newTamagotchi);
+            MyContext.SaveChanges();
         }
 
         public void ExecuteAllRules(Tamagotchi tamagotchi)
         {
+            CheckActionReady(tamagotchi);
+
             foreach (var rule in EnabledRules)
             {
                 tamagotchi = rule.ExecuteRule(tamagotchi, PassedTime(tamagotchi.LastAccessTime) , RuleMultipliers);
             }
 
-            _myContext.Tamagotchis.AddOrUpdate(tamagotchi);
-            _myContext.SaveChanges();
+            tamagotchi.LastAccessTime = DateTime.Now;
+            CheckMinMaxValues(tamagotchi);
+
+            MyContext.Tamagotchis.AddOrUpdate(tamagotchi);
+            MyContext.SaveChanges();
+           
         }
 
         public void ExecuteAction(Tamagotchi tamagotchi, Actions action)
         {
+            CheckActionReady(tamagotchi);
+
+            _action = PickActionObject(action);
+            ExecuteAllRules(tamagotchi);
+            _action.ExecuteGameAction(tamagotchi, ActionTimeSpan);
+            
+            tamagotchi.LastAccessTime = DateTime.Now;
+            CheckMinMaxValues(tamagotchi);
+
+            MyContext.Tamagotchis.AddOrUpdate(tamagotchi);
+            MyContext.SaveChanges();
+            
+        }
+
+        private void CheckActionReady(Tamagotchi tamagotchi)
+        {
+            if (tamagotchi.LastAction != Actions.None)
+            {
+                var LastAction = PickActionObject(tamagotchi.LastAction);
+                LastAction.StopAction(tamagotchi, ActionMultipliers, PassedTime(tamagotchi.StartActionTime));
+            }
+        }
+
+        private void CheckMinMaxValues(Tamagotchi tamagotchi)
+        {
+            if (tamagotchi.Hunger > 100)
+            {
+                tamagotchi.Hunger = 100;
+            }
+            else if (tamagotchi.Hunger < 0)
+            {
+                tamagotchi.Hunger = 0;
+            }
+
+            if (tamagotchi.Health > 100)
+            {
+                tamagotchi.Health = 100;
+            }
+            else if (tamagotchi.Health < 0)
+            {
+                tamagotchi.Health = 0;
+            }
+
+            if (tamagotchi.Boredom > 100)
+            {
+                tamagotchi.Boredom = 100;
+            }
+            else if (tamagotchi.Boredom < 0)
+            {
+                tamagotchi.Boredom = 0;
+            }
+
+            if (tamagotchi.Sleep > 100)
+            {
+                tamagotchi.Sleep = 100;
+            }
+            else if (tamagotchi.Sleep < 0)
+            {
+                tamagotchi.Sleep = 0;
+            }
+
+        }
+
+        private GameAction PickActionObject(Actions action)
+        {
+            GameAction returnAction;
+
             switch (action)
             {
                 case Actions.Hug:
-                    _action = new Hug();
+                    returnAction = new Hug();
                     break;
                 case Actions.Workout:
-                    _action = new Workout();
+                    returnAction = new Workout();
                     break;
                 case Actions.Play:
-                    _action = new Play();
+                    returnAction = new Play();
                     break;
                 case Actions.Eat:
-                    _action = new Eat();
+                    returnAction = new Eat();
                     break;
                 case Actions.Sleep:
-                    _action = new Sleep();
+                    returnAction = new Sleep();
                     break;
+                default:
+                    throw new Exception("Invalid Action");
             }
-            this.ExecuteAllRules(tamagotchi);
-            _action.ExecuteGameAction(tamagotchi, ActionMultipliers, ActionTimeSpan);
+            return returnAction;
         }
 
         public Tamagotchi GetTamagotchi()
         {
-            return _myContext.Tamagotchis.Find("TestTamagotchi");
+            return MyContext.Tamagotchis.Find("TestTamagotchi");
         }
     }
 }

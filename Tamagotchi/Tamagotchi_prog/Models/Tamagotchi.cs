@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Dynamic;
+using Tamagotchi_prog.Models.GameActions;
 
 namespace Tamagotchi_prog.Models
 {
@@ -12,16 +11,23 @@ namespace Tamagotchi_prog.Models
         [Key]
         public String Name { get; set; }
 
-        public int Hunger { get; set; }
+        public DateTime LastAccessTime { get; set; }
         //TimeRemaining to achieve munchies
         public double MunchieTime { get; set; }
-        public int Sleep { get; set; }
+        //ActionCooldown time in minutes
+        public double CooldownTime { get; set; }
 
-        public int Boredom { get; set; }
+        public DateTime StartActionTime { get; set; }
 
-        public int Health { get; set; }
+        public Actions LastAction { get; set; }
 
-        public DateTime LastAccessTime { get; set; }
+        public double Hunger { get; set; }
+
+        public double Sleep { get; set; }
+
+        public double Boredom { get; set; }
+
+        public double Health { get; set; }
 
         public String ImageURL { get; set; }
 

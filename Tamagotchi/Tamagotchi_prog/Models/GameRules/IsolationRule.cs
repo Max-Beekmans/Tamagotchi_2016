@@ -7,7 +7,7 @@ namespace Tamagotchi_prog.Models.GameRules
     {
         public Tamagotchi ExecuteRule(Tamagotchi tamagotchi, double timePassed, Dictionary<string, double> multipliers)
         {
-            tamagotchi.Health += (int) Math.Round(timePassed*multipliers["isolation"]);
+            tamagotchi.Health += (timePassed*multipliers["isolation"]);
 
             if (tamagotchi.Health <= 20)
             {
